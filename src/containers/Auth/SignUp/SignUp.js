@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import { Formik } from 'formik';
 
+import './SignUp.css';
+
 class SignUp extends Component {
     render() {
         return (
-            <div>
+            <div className="sign-up">
                 <Formik
                     initialValues={{ email: '', password: '' }}
                     validate={values => {
@@ -35,19 +37,21 @@ class SignUp extends Component {
                           handleChange,
                           handleSubmit
                       }) => (
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} className="sign-up__form">
                             {this.props.props ? <div>error</div> : null}
                             <input type="text"
+                                   className="sign-up__form__email"
                                    value={values.email}
                                    name="email"
                                    onChange={handleChange}
                                    placeholder="Email"/>
                             <input type="password"
+                                   className="sign-up__form__password"
                                    value={values.password}
                                    name="password"
                                    onChange={handleChange}
                                    placeholder="Password"/>
-                            <button type="submit">Sign Up</button>
+                            <button type="submit" className="sign-up__form__submit">Sign Up</button>
                         </form>
                     )}
                 </Formik>

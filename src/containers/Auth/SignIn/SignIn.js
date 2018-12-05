@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Formik } from 'formik';
 
+import './SignIn.css';
+
 class SignIn extends Component {
     render() {
         return(
-            <div>
+            <div className="sign-in">
                 <Formik
                     initialValues={{ email: '', password: '' }}
                     validate={values => {
@@ -35,20 +37,22 @@ class SignIn extends Component {
                           handleChange,
                           handleSubmit
                       }) => (
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} className="sign-in__form">
                             <input type="text"
+                                   className="sign-in__form__email"
                                    placeholder="Email"
                                    onChange={handleChange}
                                    value={values.email}
                                    name="email"/>
                             {errors.email && touched.email && errors.email}
                             <input type="password"
+                                   className="sign-in__form__password"
                                    placeholder="Password"
                                    onChange={handleChange}
                                    value={values.password}
                                    name="password"/>
                             {errors.password && touched.password && errors.password}
-                            <button type="submit">Sign In</button>
+                            <button type="submit" className="sign-in__form__submit">Sign In</button>
                         </form>
                     )}
                 </Formik>
