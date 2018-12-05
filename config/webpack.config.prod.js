@@ -350,7 +350,7 @@ module.exports = {
             loader: getStyleLoaders({
               importLoaders: 1,
               sourceMap: shouldUseSourceMap,
-              modules: true,
+              modules: false,
               localIdentIName: '[name]__[local]__[hash:base64:5]'
             }),
             // Don't consider CSS imports dead code even if the

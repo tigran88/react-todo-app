@@ -1,0 +1,17 @@
+.nav {
+    margin-left: auto;
+}
+
+.nav__link {
+    color: #B2DFDB;
+    margin-left: 11px;
+    text-decoration: none;
+}
+
+.nav__link:hover {
+    color: #ffffff;
+}
+
+.nav--active {
+    color: #ffffff
+}

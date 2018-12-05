@@ -1,3 +1,11 @@
-.test {
-    color: red;
+.main {
+    box-sizing: border-box;
+    min-height: calc(100vh - 80px);
+    padding-top: 10px;
+}
+
+.container {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
 }
