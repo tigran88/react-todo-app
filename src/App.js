@@ -6,6 +6,7 @@ import Layout from './containers/Layout/Layout';
 
 const Home = lazy(() => import('./containers/Home/Home'));
 const Todos = lazy(() => import('./containers/Todos/Todos'));
+const Auth = lazy(() => import('./containers/Auth/Auth'));
 const ErrorNotFound = lazy(() => import('./components/ErrorNotFound/ErrorNotFound'));
 
 class App extends Component {
@@ -14,8 +15,9 @@ class App extends Component {
         <Layout>
             <Suspense fallback={<div>Loading...</div>}>
                 <Switch>
-                    <Route path='/' component={ Home } exact/>
-                    <Route path='/todos' component={ Todos } />
+                    <Route path='/' component={Home} exact/>
+                    <Route path='/todos' component={Todos} />
+                    <Route path='/:auth' component={Auth} />
                     <Route component={ ErrorNotFound } />
                 </Switch>
             </Suspense>
