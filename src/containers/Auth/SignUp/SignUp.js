@@ -40,13 +40,17 @@ class SignUp extends Component {
                         <form onSubmit={handleSubmit} className="sign-up__form">
                             {this.props.props ? <div>error</div> : null}
                             <input type="text"
-                                   className="sign-up__form__email"
+                                   className={
+                                       (errors.email && touched.email && errors.email) ? 'sign-up__form__email sign-up__form--error' : 'sign-up__form__email'
+                                   }
                                    value={values.email}
                                    name="email"
                                    onChange={handleChange}
                                    placeholder="Email"/>
                             <input type="password"
-                                   className="sign-up__form__password"
+                                   className={
+                                       (errors.password && touched.password && errors.password) ? 'sign-up__form__password sign-up__form--error' : 'sign-up__form__password'
+                                   }
                                    value={values.password}
                                    name="password"
                                    onChange={handleChange}

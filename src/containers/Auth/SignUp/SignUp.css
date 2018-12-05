@@ -26,6 +26,7 @@
     padding-left: 10px;
     border: 1px solid #80CBC4;
     margin-bottom: 11px;
+    outline: none;
 }
 
 .sign-up__form__submit {
@@ -36,4 +37,8 @@
 
 .sign-up__form__submit:hover {
     background-color: #4DB6AC;
+}
+
+.sign-up__form--error {
+    border: 1px solid #ef5350;
 }

@@ -39,19 +39,21 @@ class SignIn extends Component {
                       }) => (
                         <form onSubmit={handleSubmit} className="sign-in__form">
                             <input type="text"
-                                   className="sign-in__form__email"
+                                   className={
+                                       (errors.email && touched.email && errors.email) ? 'sign-in__form__email sign-in__form--error' : 'sign-in__form__email'
+                                   }
                                    placeholder="Email"
                                    onChange={handleChange}
                                    value={values.email}
                                    name="email"/>
-                            {errors.email && touched.email && errors.email}
                             <input type="password"
-                                   className="sign-in__form__password"
+                                   className={
+                                       (errors.password && touched.password && errors.password) ? 'sign-in__form__password sign-in__form--error' : 'sign-in__form__password'
+                                   }
                                    placeholder="Password"
                                    onChange={handleChange}
                                    value={values.password}
                                    name="password"/>
-                            {errors.password && touched.password && errors.password}
                             <button type="submit" className="sign-in__form__submit">Sign In</button>
                         </form>
                     )}
