@@ -6,10 +6,14 @@ import Footer from '../../components/Footer/Footer'
 import './Layout.css';
 
 class Layout extends Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
         return (
             <>
-                <Header />
+                <Header isAuth={this.props.isAuth} />
                 <main className="main container">
                     {this.props.children}
                 </main>
