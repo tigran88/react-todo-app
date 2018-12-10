@@ -1,0 +1,10 @@
+.todos {
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.todos__title {
+    color: #00796B;
+    text-align: center;
+}

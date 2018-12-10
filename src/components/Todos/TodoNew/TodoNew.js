@@ -1,9 +1,11 @@
 import React from 'react';
 
+import './TodoNew.css';
+
 const todoNew = () => {
     return (
-        <div>
-            new todo
+        <div className="todo-new">
+            <input className="todo-new__input" placeholder="Add Todo" />
         </div>
     );
 }
