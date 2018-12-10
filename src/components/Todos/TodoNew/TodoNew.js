@@ -1,13 +1,17 @@
-import React from 'react';
+import React from "react";
 
-import './TodoNew.css';
+import "./TodoNew.css";
 
-const todoNew = () => {
-    return (
-        <div className="todo-new">
-            <input className="todo-new__input" placeholder="Add Todo" />
-        </div>
-    );
-}
+const todoNew = props => {
+  return (
+    <div className="todo-new">
+      <input
+        onKeyUp={props.addTodo}
+        className="todo-new__input"
+        placeholder="Add Todo"
+      />
+    </div>
+  );
+};
 
 export default todoNew;
