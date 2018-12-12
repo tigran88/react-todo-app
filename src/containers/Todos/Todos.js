@@ -17,6 +17,7 @@ class Todos extends Component {
 
     this.addTodoHandler = this.addTodoHandler.bind(this);
     this.deleteTodoHandler = this.deleteTodoHandler.bind(this);
+    this.toggleCompletedChange = this.toggleCompletedChange.bind(this);
   }
 
   componentDidMount() {
@@ -45,6 +46,22 @@ class Todos extends Component {
     }
   }
 
+    toggleCompletedChange(id, completed) {
+        axios.patch('todos/' + id + '.json', {completed: !completed})
+            .then(res => {
+                console.log(res);
+                const todos = [];
+                this.state.todos.map(todo => {
+                    if (todo.id == id) {
+                        todo.completed = !todo.completed;
+                    }
+                    todos.push(todo);
+                });
+                this.setState({todos: todos});
+            })
+            .catch(error => console.log(error));
+    }
+
   deleteTodoHandler(id) {
     axios
       .delete("todos/" + id + ".json")
@@ -71,6 +88,7 @@ class Todos extends Component {
               key={todo.id}
               todo={todo}
               deleteTodo={this.deleteTodoHandler}
+              onToggleCompletedChange={this.toggleCompletedChange}
             />
           );
         })}
