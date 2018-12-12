@@ -16,6 +16,7 @@ class Todos extends Component {
     };
 
     this.addTodoHandler = this.addTodoHandler.bind(this);
+    this.deleteTodoHandler = this.deleteTodoHandler.bind(this);
   }
 
   componentDidMount() {
@@ -23,7 +24,7 @@ class Todos extends Component {
       let allTodos = [];
 
       for (var key in todos.data) {
-        allTodos.push({ id: key, title: todos.data[key]["title"] });
+        allTodos.push({ id: key, title: todos.data[key]["title"], completed: todos.data[key]['completed'] });
       }
 
       this.setState({ todos: allTodos });
@@ -35,13 +36,28 @@ class Todos extends Component {
     if (event.key === "Enter") {
       const todoTitle = event.target.value;
       axios
-        .post("todos.json", { title: todoTitle })
+        .post("todos.json", { title: todoTitle, completed: false })
         .then(res => {
-            todos.push({ id: res.data.name, title: todoTitle });
-            this.setState({ todos: todos });
+          todos.push({ id: res.data.name, title: todoTitle, completed: false });
+          this.setState({ todos: todos });
         })
         .catch(error => console.log(error));
     }
+  }
+
+  deleteTodoHandler(id) {
+    axios
+      .delete("todos/" + id + ".json")
+      .then(() => {
+        const todos= [];
+        this.state.todos.map(todo => {
+          if (todo.id !== id) {
+            todos.push(todo);
+          }
+        });
+        this.setState({todos: todos});
+      })
+      .catch(error => console.log(error));
   }
 
   render() {
@@ -50,7 +66,13 @@ class Todos extends Component {
         <h1 className="todos__title">Todos</h1>
         <TodoNew addTodo={this.addTodoHandler} />
         {this.state.todos.map(todo => {
-          return <Todo key={todo.id} title={todo.title} />;
+          return (
+            <Todo
+              key={todo.id}
+              todo={todo}
+              deleteTodo={this.deleteTodoHandler}
+            />
+          );
         })}
       </div>
     );
