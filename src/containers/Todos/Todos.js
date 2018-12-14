@@ -12,12 +12,14 @@ class Todos extends Component {
     super(props);
 
     this.state = {
-      todos: []
+        newTodoValue: '',
+        todos: []
     };
 
     this.addTodoHandler = this.addTodoHandler.bind(this);
     this.deleteTodoHandler = this.deleteTodoHandler.bind(this);
     this.toggleCompletedChange = this.toggleCompletedChange.bind(this);
+    this.newTodoValueChangeHandler = this.newTodoValueChangeHandler.bind(this);
   }
 
   componentDidMount() {
@@ -32,6 +34,10 @@ class Todos extends Component {
     });
   }
 
+  newTodoValueChangeHandler(event) {
+      this.setState({newTodoValue: event.target.value});
+  }
+
   addTodoHandler(event) {
     let todos = [...this.state.todos];
     if (event.key === "Enter") {
@@ -40,6 +46,7 @@ class Todos extends Component {
         .post("todos.json", { title: todoTitle, completed: false })
         .then(res => {
           todos.push({ id: res.data.name, title: todoTitle, completed: false });
+          this.setState({newTodoValue: ''});
           this.setState({ todos: todos });
         })
         .catch(error => console.log(error));
@@ -49,7 +56,6 @@ class Todos extends Component {
     toggleCompletedChange(id, completed) {
         axios.patch('todos/' + id + '.json', {completed: !completed})
             .then(res => {
-                console.log(res);
                 const todos = [];
                 this.state.todos.map(todo => {
                     if (todo.id == id) {
@@ -81,7 +87,9 @@ class Todos extends Component {
     return (
       <div className="todos">
         <h1 className="todos__title">Todos</h1>
-        <TodoNew addTodo={this.addTodoHandler} />
+        <TodoNew addTodo={this.addTodoHandler}
+                 todoValue={this.state.newTodoValue}
+                 onTodoValueChange={this.newTodoValueChangeHandler}/>
         {this.state.todos.map(todo => {
           return (
             <Todo

@@ -9,6 +9,8 @@ const todoNew = props => {
         onKeyUp={props.addTodo}
         className="todo-new__input"
         placeholder="Add Todo"
+        value={props.todoValue}
+        onChange={props.onTodoValueChange}
       />
     </div>
   );
