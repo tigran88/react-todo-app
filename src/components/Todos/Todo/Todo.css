@@ -5,11 +5,7 @@
     min-height: 48px;
 }
 
-.todo__checkbox {
-
-}
-
-.todo__name {
+.todo__title {
     margin-left: 8px;
 }
 
@@ -17,4 +13,16 @@
     margin-left: auto;
     cursor: pointer;
     margin-right: 8px;
+}
+
+.todo__edit-input {
+    display: none;
+}
+
+.editMode .todo__edit-input {
+    display: block;
+}
+
+.editMode .todo__title {
+    display: none;
 }

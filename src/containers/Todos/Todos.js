@@ -20,6 +20,7 @@ class Todos extends Component {
     this.deleteTodoHandler = this.deleteTodoHandler.bind(this);
     this.toggleCompletedChange = this.toggleCompletedChange.bind(this);
     this.newTodoValueChangeHandler = this.newTodoValueChangeHandler.bind(this);
+    this.editTodoHandle = this.editTodoHandle.bind(this);
   }
 
   componentDidMount() {
@@ -68,6 +69,13 @@ class Todos extends Component {
             .catch(error => console.log(error));
     }
 
+    editTodoHandle(id, title) {
+      axios
+          .put('todos/' + id + '.json', {title})
+          .then(() => console.log('Todo successfully updated!'))
+          .catch(error => console.log(error));
+    }
+
   deleteTodoHandler(id) {
     axios
       .delete("todos/" + id + ".json")
@@ -95,6 +103,7 @@ class Todos extends Component {
             <Todo
               key={todo.id}
               todo={todo}
+              edit={this.editTodoHandle}
               deleteTodo={this.deleteTodoHandler}
               onToggleCompletedChange={this.toggleCompletedChange}
             />
