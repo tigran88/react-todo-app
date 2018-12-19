@@ -24,19 +24,24 @@ class Todos extends Component {
     this.newTodoValueChangeHandler = this.newTodoValueChangeHandler.bind(this);
     this.editTodoHandle = this.editTodoHandle.bind(this);
     this.filterTodoHandler = this.filterTodoHandler.bind(this);
+    this.clearCompleted = this.clearCompleted.bind(this);
   }
 
   componentDidMount() {
-    axios.get("todos.json").then(todos => {
-      let allTodos = [];
+      this.getTodos();
+  }
 
-      for (var key in todos.data) {
-        allTodos.push({ id: key, title: todos.data[key]["title"], completed: todos.data[key]['completed'] });
-      }
+  getTodos() {
+      axios.get("todos.json").then(todos => {
+          let allTodos = [];
 
-      this.setState({ todos: allTodos });
-    });
-    this.getItemLefts();
+          for (var key in todos.data) {
+              allTodos.push({ id: key, title: todos.data[key]["title"], completed: todos.data[key]['completed'] });
+          }
+
+          this.setState({ todos: allTodos });
+      });
+      this.getItemLefts();
   }
 
   newTodoValueChangeHandler(event) {
@@ -136,6 +141,21 @@ class Todos extends Component {
         }).catch(error => console.log(error));
     }
 
+    clearCompleted() {
+        axios.get('todos.json')
+            .then(todos => {
+                for (var key in todos.data) {
+                    if (todos.data[key]['completed']) {
+                        axios
+                            .delete("todos/" + key + ".json")
+                            .then(() => {this.getTodos();})
+                            .catch(error => console.log(error));
+                    }
+                }
+            })
+            .catch(error => console.log(error));
+    }
+
   render() {
     return (
       <div className="todos">
@@ -154,7 +174,10 @@ class Todos extends Component {
             />
           );
         })}
-        <Filters leftItems={this.state.itemLefts} filterTodo={this.filterTodoHandler} />
+        <Filters
+            leftItems={this.state.itemLefts}
+            filterTodo={this.filterTodoHandler}
+            clearCompleted={this.clearCompleted} />
       </div>
     );
   }
