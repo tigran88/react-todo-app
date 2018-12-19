@@ -4,6 +4,7 @@ import axios from "../../axios";
 
 import Todo from "../../components/Todos/Todo/Todo";
 import TodoNew from "../../components/Todos/TodoNew/TodoNew";
+import Filters from '../../components/Todos/Filters/Filters';
 
 import "./Todos.css";
 
@@ -109,6 +110,7 @@ class Todos extends Component {
             />
           );
         })}
+        <Filters />
       </div>
     );
   }
