@@ -14,7 +14,8 @@ class Todos extends Component {
 
     this.state = {
         newTodoValue: '',
-        todos: []
+        todos: [],
+        itemLefts: ''
     };
 
     this.addTodoHandler = this.addTodoHandler.bind(this);
@@ -22,6 +23,7 @@ class Todos extends Component {
     this.toggleCompletedChange = this.toggleCompletedChange.bind(this);
     this.newTodoValueChangeHandler = this.newTodoValueChangeHandler.bind(this);
     this.editTodoHandle = this.editTodoHandle.bind(this);
+    this.filterTodoHandler = this.filterTodoHandler.bind(this);
   }
 
   componentDidMount() {
@@ -34,6 +36,7 @@ class Todos extends Component {
 
       this.setState({ todos: allTodos });
     });
+    this.getItemLefts();
   }
 
   newTodoValueChangeHandler(event) {
@@ -58,6 +61,7 @@ class Todos extends Component {
     toggleCompletedChange(id, completed) {
         axios.patch('todos/' + id + '.json', {completed: !completed})
             .then(res => {
+                this.getItemLefts();
                 const todos = [];
                 this.state.todos.map(todo => {
                     if (todo.id == id) {
@@ -92,6 +96,46 @@ class Todos extends Component {
       .catch(error => console.log(error));
   }
 
+    getItemLefts() {
+        axios.get('todos.json?orderBy="completed"&equalTo=false')
+            .then(res => {
+                let itemOrItems = '';
+                const itemLeftsCount = Object.keys(res.data).length;
+                if (itemLeftsCount > 1) {
+                    itemOrItems = 's';
+                }
+
+                const itemLefts = itemLeftsCount + ' item' + itemOrItems + ' left';
+
+                this.setState({itemLefts})
+            })
+            .catch(error => console.log(error));
+    }
+
+    filterTodoHandler(type) {
+        let filterUrl = '';
+        switch (type) {
+            case 'completed':
+                filterUrl = '?orderBy="completed"&equalTo=true';
+                break;
+            case 'active':
+                filterUrl = '?orderBy="completed"&equalTo=false';
+                break;
+            default:
+        }
+        axios.get('todos.json' + filterUrl).then(todos => {
+            let allTodos = [];
+
+            console.log(todos);
+
+            for (var key in todos.data) {
+                allTodos.push({ id: key, title: todos.data[key]["title"], completed: todos.data[key]['completed'] });
+            }
+
+            this.setState({ todos: allTodos });
+        }).catch(error => console.log(error));
+    }
+
   render() {
     return (
       <div className="todos">
@@ -110,7 +154,7 @@ class Todos extends Component {
             />
           );
         })}
-        <Filters />
+        <Filters leftItems={this.state.itemLefts} filterTodo={this.filterTodoHandler} />
       </div>
     );
   }
