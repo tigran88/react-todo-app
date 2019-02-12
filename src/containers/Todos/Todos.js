@@ -1,186 +1,67 @@
 import React, { Component } from "react";
-
-import axios from "../../axios";
+import { connect } from 'react-redux';
 
 import Todo from "../../components/Todos/Todo/Todo";
 import TodoNew from "../../components/Todos/TodoNew/TodoNew";
 import Filters from '../../components/Todos/Filters/Filters';
-
+import * as todoActions from '../../store/actions/index';
 import "./Todos.css";
 
 class Todos extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-        newTodoValue: '',
-        todos: [],
-        itemLefts: ''
-    };
-
-    this.addTodoHandler = this.addTodoHandler.bind(this);
-    this.deleteTodoHandler = this.deleteTodoHandler.bind(this);
-    this.toggleCompletedChange = this.toggleCompletedChange.bind(this);
-    this.newTodoValueChangeHandler = this.newTodoValueChangeHandler.bind(this);
-    this.editTodoHandle = this.editTodoHandle.bind(this);
-    this.filterTodoHandler = this.filterTodoHandler.bind(this);
-    this.clearCompleted = this.clearCompleted.bind(this);
   }
 
   componentDidMount() {
-      this.getTodos();
+      this.props.onInitTodos();
   }
-
-  getTodos() {
-      axios.get("todos.json").then(todos => {
-          let allTodos = [];
-
-          for (var key in todos.data) {
-              allTodos.push({ id: key, title: todos.data[key]["title"], completed: todos.data[key]['completed'] });
-          }
-
-          this.setState({ todos: allTodos });
-      });
-      this.getItemLefts();
-  }
-
-  newTodoValueChangeHandler(event) {
-      this.setState({newTodoValue: event.target.value});
-  }
-
-  addTodoHandler(event) {
-    let todos = [...this.state.todos];
-    if (event.key === "Enter") {
-      const todoTitle = event.target.value;
-      axios
-        .post("todos.json", { title: todoTitle, completed: false })
-        .then(res => {
-          todos.push({ id: res.data.name, title: todoTitle, completed: false });
-          this.setState({newTodoValue: ''});
-          this.setState({ todos: todos });
-        })
-        .catch(error => console.log(error));
-    }
-  }
-
-    toggleCompletedChange(id, completed) {
-        axios.patch('todos/' + id + '.json', {completed: !completed})
-            .then(res => {
-                this.getItemLefts();
-                const todos = [];
-                this.state.todos.map(todo => {
-                    if (todo.id == id) {
-                        todo.completed = !todo.completed;
-                    }
-                    todos.push(todo);
-                });
-                this.setState({todos: todos});
-            })
-            .catch(error => console.log(error));
-    }
-
-    editTodoHandle(id, title) {
-      axios
-          .put('todos/' + id + '.json', {title})
-          .then(() => console.log('Todo successfully updated!'))
-          .catch(error => console.log(error));
-    }
-
-  deleteTodoHandler(id) {
-    axios
-      .delete("todos/" + id + ".json")
-      .then(() => {
-        const todos= [];
-        this.state.todos.map(todo => {
-          if (todo.id !== id) {
-            todos.push(todo);
-          }
-        });
-        this.setState({todos: todos});
-      })
-      .catch(error => console.log(error));
-  }
-
-    getItemLefts() {
-        axios.get('todos.json?orderBy="completed"&equalTo=false')
-            .then(res => {
-                let itemOrItems = '';
-                const itemLeftsCount = Object.keys(res.data).length;
-                if (itemLeftsCount > 1) {
-                    itemOrItems = 's';
-                }
-
-                const itemLefts = itemLeftsCount + ' item' + itemOrItems + ' left';
-
-                this.setState({itemLefts})
-            })
-            .catch(error => console.log(error));
-    }
-
-    filterTodoHandler(type) {
-        let filterUrl = '';
-        switch (type) {
-            case 'completed':
-                filterUrl = '?orderBy="completed"&equalTo=true';
-                break;
-            case 'active':
-                filterUrl = '?orderBy="completed"&equalTo=false';
-                break;
-            default:
-        }
-        axios.get('todos.json' + filterUrl).then(todos => {
-            let allTodos = [];
-
-            console.log(todos);
-
-            for (var key in todos.data) {
-                allTodos.push({ id: key, title: todos.data[key]["title"], completed: todos.data[key]['completed'] });
-            }
-
-            this.setState({ todos: allTodos });
-        }).catch(error => console.log(error));
-    }
-
-    clearCompleted() {
-        axios.get('todos.json')
-            .then(todos => {
-                for (var key in todos.data) {
-                    if (todos.data[key]['completed']) {
-                        axios
-                            .delete("todos/" + key + ".json")
-                            .then(() => {this.getTodos();})
-                            .catch(error => console.log(error));
-                    }
-                }
-            })
-            .catch(error => console.log(error));
-    }
 
   render() {
     return (
       <div className="todos">
         <h1 className="todos__title">Todos</h1>
-        <TodoNew addTodo={this.addTodoHandler}
-                 todoValue={this.state.newTodoValue}
-                 onTodoValueChange={this.newTodoValueChangeHandler}/>
-        {this.state.todos.map(todo => {
+        <TodoNew addTodo={this.props.onTodoAdded}
+                 todoValue={this.props.newTodoValue}
+                 onTodoValueChange={this.props.onSetNewTodoValue}/>
+        {this.props.todos.map(todo => {
           return (
             <Todo
               key={todo.id}
               todo={todo}
-              edit={this.editTodoHandle}
-              deleteTodo={this.deleteTodoHandler}
-              onToggleCompletedChange={this.toggleCompletedChange}
+              edit={this.props.onUpdateTodo}
+              deleteTodo={this.props.onTodoDeleted}
+              onToggleCompletedChange={this.props.onToggleCompleted}
             />
           );
         })}
         <Filters
-            leftItems={this.state.itemLefts}
-            filterTodo={this.filterTodoHandler}
-            clearCompleted={this.clearCompleted} />
+            leftItems={this.props.itemLefts}
+            filterTodo={this.props.onUpdateFilterTodo}
+            clearCompleted={this.props.onClearCompleted} />
       </div>
     );
   }
 }
 
-export default Todos;
+const mapStateToProps = state => {
+    return {
+        todos: state.todo.todos,
+        newTodoValue: state.todo.newTodoValue,
+        itemLefts: state.todo.itemLefts
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onInitTodos: () => dispatch(todoActions.initTodos()),
+        onSetNewTodoValue: (value) => dispatch(todoActions.newTodoValue(value)),
+        onTodoAdded: (event) => dispatch(todoActions.setNewTodos(event)),
+        onTodoDeleted: (todoId) => dispatch(todoActions.removeTodo(todoId)),
+        onToggleCompleted: ((id, completed) => dispatch(todoActions.setToggleCompleted(id, completed))),
+        onClearCompleted: (() => dispatch(todoActions.clearCompletedRec())),
+        onUpdateTodo: ((id, title) => dispatch(todoActions.updateTodo(id, title))),
+        onUpdateFilterTodo: ((type) => dispatch(todoActions.updateFilterTodo(type)))
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Todos);

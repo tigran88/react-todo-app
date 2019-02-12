@@ -4,42 +4,38 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
-// import axios from 'axios'
-//
-// // axios.defaults.baseURL = 'https://react-todo-app-1cb41.firebaseio.com/';
-// axios.defaults.baseURL = 'https://jsonplaceholder.typicode.com/';
-// axios.defaults.headers.common['Authorization'] = "AUTH TOKEN";
-// axios.defaults.headers.post['Content-Type'] = 'application/json';
-//
-// axios.interceptors.request.use(request => {
-//     console.log(request)
-//     return request;
-// }, error => {
-//     console.log(error);
-//     return Promise.reject(error);
-// });
-//
-// const Error = () => {
-//     return (
-//         <div>
-//             error 500
-//         </div>
-//     )
-// };
-//
-// axios.interceptors.response.use(response => {
-//     console.log(response);
-//     return response;
-// }, error => {
-//     console.log(error);
-//     return <Error />;
-//     // return Promise.reject(error);
-// });
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
+import thunk from 'redux-thunk';
+
+import authReducer from './store/reducers/auth'
+import todoReducer from './store/reducers/todo'
+
+const logger = store => {
+  return next => {
+      return action => {
+          const result = next(action);
+          return result;
+      }
+  }
+};
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const rootReducer = combineReducers({
+    auth: authReducer,
+    todo: todoReducer
+});
+
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger, thunk)));
+// const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 ReactDOM.render(
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>
+    <Provider store={store}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </Provider>
     , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
